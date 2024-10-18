@@ -13,8 +13,8 @@ const isFavorited = ref(props.initialFavorited);
 const loading = ref(false);
 
 const toggleFavorite = async () => {
-  if (!props.userId || !props.itemId) {
-    console.error("userId or itemId is undefined");
+  if (!props.itemId) {
+    console.error("itemId is undefined");
     return;
   }
 
@@ -24,7 +24,7 @@ const toggleFavorite = async () => {
       await fetchy(`/api/favorites/${props.itemId}`, "DELETE");
     } else {
       await fetchy(`/api/favorites/${props.itemId}`, "POST", {
-        body: { userId: props.userId, itemId: props.itemId },
+        body: { itemId: props.itemId },
       });
     }
     isFavorited.value = !isFavorited.value;
