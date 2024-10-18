@@ -4,18 +4,25 @@ import { fetchy } from "../../utils/fetchy";
 import FavoriteButton from "./FavoriteButton.vue";
 
 const props = defineProps({ userId: String });
-const favoriteItems = ref([]);
+
+interface FavoriteItem {
+  id: string;
+  itemId: string;
+  favorited: boolean;
+}
+
+const favoriteItems = ref<FavoriteItem[]>([]);
 
 const fetchFavorites = async () => {
   try {
-    const response = await fetchy("/api/favorites", "GET", { params: { userId: props.userId } });
+    const response = await fetchy(`/api/favorites?userId=${props.userId}`, "GET");
     favoriteItems.value = await response;
   } catch (error) {
     console.error("Error fetching favorites:", error);
   }
 };
 
-const handleFavoriteToggled = ({ itemId, favorited }) => {
+const handleFavoriteToggled = ({ itemId, favorited }: { itemId: string; favorited: boolean }) => {
   if (!favorited) {
     favoriteItems.value = favoriteItems.value.filter((item) => item.id !== itemId);
   }

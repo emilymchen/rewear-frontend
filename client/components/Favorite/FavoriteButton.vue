@@ -12,23 +12,23 @@ const emit = defineEmits(["favoriteToggled"]);
 const isFavorited = ref(props.initialFavorited);
 const loading = ref(false);
 
-// Toggle favorite state
 const toggleFavorite = async () => {
+  if (!props.userId || !props.itemId) {
+    console.error("userId or itemId is undefined");
+    return;
+  }
+
   loading.value = true;
   try {
     if (isFavorited.value) {
-      // Unfavorite the item using DELETE
       await fetchy(`/api/favorites/${props.itemId}`, "DELETE");
     } else {
-      // Favorite the item using POST
       await fetchy(`/api/favorites/${props.itemId}`, "POST", {
         body: { userId: props.userId, itemId: props.itemId },
       });
     }
-    // Toggle favorite state locally
     isFavorited.value = !isFavorited.value;
 
-    // Emit an event to the parent component to notify that the favorite status changed
     emit("favoriteToggled");
   } catch (error) {
     console.error("Error toggling favorite:", error);
