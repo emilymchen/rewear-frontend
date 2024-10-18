@@ -7,7 +7,7 @@ import FavoriteButton from "../Favorite/FavoriteButton.vue";
 
 const props = defineProps(["post"]);
 const emit = defineEmits(["editPost", "refreshPosts"]);
-const { currentUsername } = storeToRefs(useUserStore());
+const { currentUsername, currentUserId } = storeToRefs(useUserStore());
 
 const deletePost = async () => {
   try {
