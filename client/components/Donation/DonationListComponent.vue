@@ -20,7 +20,6 @@ const fetchListedItems = async () => {
   try {
     const result = await fetchy("/api/donations/all", "GET");
     listedItems.value = result;
-    console.log(result);
   } catch (error) {
     console.error("Error fetching listed items:", error);
   } finally {

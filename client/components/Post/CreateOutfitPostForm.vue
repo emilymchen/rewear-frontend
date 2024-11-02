@@ -33,9 +33,6 @@ async function getCatalogItems() {
 }
 
 const createPost = async () => {
-  console.log(selectedItems.value);
-  console.log(selectedItems.value.length);
-
   // Validate all required fields
   if (caption.value.trim() === "" || selectedItems.value.length === 0 || !isValidPhotoUrl.value) {
     alert("Please complete all fields with valid values before submitting.");

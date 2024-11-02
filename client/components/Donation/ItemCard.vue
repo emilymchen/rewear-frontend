@@ -12,8 +12,6 @@ const props = defineProps<{
   };
 }>();
 
-console.log(props);
-
 const router = useRouter();
 
 interface CatalogItem {
@@ -37,19 +35,16 @@ const getCatalogItem = async (id: string) => {
   try {
     const getResults = await fetchy("/api/catalog/" + id, "GET");
     catalogItem.value = getResults;
-    console.log(catalogItem.value);
   } catch (error) {
     console.error("Error fetching catalog item: ", error);
   }
 };
 
 const viewItem = () => {
-  console.log("???", catalogItem.value?.category);
   router.push(`/view/${catalogItem.value?.category}/${catalogItem.value?._id}`);
 };
 
 onBeforeMount(() => {
-  console.log("item", props.item.itemId);
   getCatalogItem(props.item.itemId);
 });
 </script>

@@ -73,7 +73,6 @@ async function getCatalogItem(id: string) {
   try {
     const getResults = await fetchy("/api/catalog/" + id, "GET");
     catalogItem.value = getResults;
-    console.log(catalogItem.value);
   } catch (error) {
     console.error("Error fetching catalog item: ", error);
   }
@@ -93,7 +92,6 @@ async function getAuthorUsername() {
   try {
     if (catalogItem.value) {
       const result = await fetchy(`/api/userById/${catalogItem?.value.userId}`, "GET");
-      console.log("Author username: ", result.username);
       authorUsername.value = result.username;
     }
   } catch (error) {
@@ -176,8 +174,8 @@ onBeforeMount(async () => {
       <img :src="catalogItem.photoUrl" alt="Catalog Item Image" v-if="catalogItem.photoUrl" class="catalog-item-image" />
 
       <div class="catalog-item-details">
-        <p><strong>Type:</strong> {{ catalogItem.type }}</p>
-        <p><strong>Color:</strong> {{ catalogItem.color }}</p>
+        <!-- <p><strong>Type:</strong> {{ catalogItem.type }}</p>
+        <p><strong>Color:</strong> {{ catalogItem.color }}</p> -->
 
         <p v-if="isOwner"><strong>Donation Status:</strong> {{ donationStatus || "Not listed" }}</p>
         <p v-else><strong>Owner:</strong> {{ authorUsername }}</p>

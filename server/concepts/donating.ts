@@ -90,8 +90,6 @@ export default class DonatingConcept {
   async markAsDonated(userId: ObjectId, itemId: ObjectId) {
     // Check if item exists and is listed for donation
     const existingEntry = await this.donations.readOne({ itemId, userId });
-    console.log(existingEntry);
-    console.log(existingEntry?.status);
     if (!existingEntry || existingEntry.status !== DonationStatus.ListedForDonation) {
       throw new NotFoundError("This item is not listed for donation.");
     }

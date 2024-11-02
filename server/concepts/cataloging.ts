@@ -64,7 +64,6 @@ export default class CatalogingConcept {
       return items;
     } else {
       const items = await this.catalog.readMany({ userId });
-      console.log("helo", items);
       return items;
     }
   }

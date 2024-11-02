@@ -108,7 +108,6 @@ const startNewConversation = async () => {
 watch(
   () => route.params.id,
   async (newUserId) => {
-    console.log("??", newUserId);
     if (newUserId && !conversations.value.find((conv) => conv.userId === newUserId)) {
       const convUser = await fetchy(`/api/userById/${newUserId}`, "GET");
       const messages = await fetchy(`/api/messages/${newUserId}`, "GET");
