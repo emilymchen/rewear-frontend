@@ -6,11 +6,8 @@ const props = defineProps({
   type: String,
   id: String,
   name: String,
-  color: String,
   photoUrl: String,
 });
-
-console.log(props);
 
 const link = computed(() => `/view/${props.type}/${props.id}`);
 </script>
@@ -19,9 +16,8 @@ const link = computed(() => `/view/${props.type}/${props.id}`);
   <router-link :to="link" class="catalog-item">
     <img :src="props.photoUrl" alt="Image of clothing item" class="item-image" />
     <div class="item-details">
-      <p class="item-name">{{ name }}</p>
-      <p class="item-color">{{ color }}</p>
-      <p class="item-type">{{ type }}</p>
+      <p class="item-name">{{ props.name }}</p>
+      <p class="item-type">{{ props.type }}</p>
     </div>
   </router-link>
 </template>
@@ -31,32 +27,50 @@ const link = computed(() => `/view/${props.type}/${props.id}`);
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100px;
-  padding: 10px;
-  border-radius: 10px;
-  background-color: #f3f3f3;
+  width: 140px;
+  height: 200px;
+  padding: 15px;
+  border-radius: 20px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease; /* Smooth hover effect */
+  text-decoration: none;
+  color: inherit;
+}
+
+.catalog-item:hover {
+  transform: scale(1.05); /* Slightly enlarge on hover */
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15); /* Darker shadow on hover */
 }
 
 .item-image {
-  width: 80px;
-  height: 80px;
+  width: 120px;
+  height: 120px;
   object-fit: cover;
   border-radius: 8px;
+  margin-bottom: 10px;
 }
 
 .item-details {
   text-align: center;
-  margin-top: 8px;
 }
 
 .item-name {
-  font-weight: bold;
-  font-size: 0.9em;
+  font-weight: 600;
+  font-size: 1em;
+  color: #333;
+  margin: 4px 0;
 }
 
-.item-color,
+.item-color {
+  font-size: 0.9em;
+  color: #777;
+}
+
 .item-type {
-  font-size: 0.8em;
-  color: #666;
+  font-size: 0.9em;
+  color: #999;
 }
 </style>

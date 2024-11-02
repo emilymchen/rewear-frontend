@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import DonationListComponent from "@/components/Donation/DonationListComponent.vue";
-import FavoriteListComponent from "@/components/Favorite/FavoriteListComponent.vue";
 import PostListComponent from "@/components/Post/PostListComponent.vue";
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
@@ -26,20 +25,20 @@ function toggleView(view: "posts" | "donations") {
     </div>
 
     <!-- Search and Filter Options -->
-    <div class="search-filter">
+    <!-- <div class="search-filter">
       <input type="text" placeholder="Search..." />
       <button><i class="icon-search"></i></button>
       <div class="filter-sort">
         <button><i class="icon-filter"></i> filter</button>
         <button><i class="icon-sort"></i> sort</button>
       </div>
-    </div>
+    </div> -->
 
     <!-- Display the active component based on the toggle state -->
     <div class="content-container">
       <PostListComponent v-if="currentView === 'posts'" />
       <DonationListComponent v-else />
-      <FavoriteListComponent />
+      <!-- <FavoriteListComponent /> -->
     </div>
   </main>
 </template>
@@ -47,6 +46,7 @@ function toggleView(view: "posts" | "donations") {
 <style scoped>
 .explore-page {
   padding: 1em;
+  background-color: var(--color-ash-gray);
 }
 
 .toggle-container {
@@ -97,7 +97,7 @@ function toggleView(view: "posts" | "donations") {
 
 .content-container {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(1000px, 1fr));
   gap: 1em;
 }
 </style>

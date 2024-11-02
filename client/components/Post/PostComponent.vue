@@ -56,7 +56,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <router-link :to="`/ootd/${post._id}`">
+  <router-link :to="`/ootd/${post._id}`" class="post-link">
     <article class="post-card">
       <header class="post-header">
         <p class="author">Posted by {{ props.post.author }}</p>
@@ -82,21 +82,97 @@ onBeforeMount(() => {
       </div>
 
       <!-- Favorite Button -->
-      <button @click="toggleFavorite" :class="{ favorited: isFavorited }">
-        {{ isFavorited ? "Unfavorite" : "Favorite" }}
-      </button>
-      <button @click="$emit('delete-post', props.post._id)">Delete Post</button>
+      <div class="action-buttons">
+        <button @click.stop="toggleFavorite" :class="{ favorited: isFavorited }">
+          {{ isFavorited ? "Unfavorite" : "Favorite" }}
+        </button>
+        <button @click.stop="$emit('delete-post', props.post._id)">Delete Post</button>
+      </div>
     </article>
   </router-link>
 </template>
 
 <style scoped>
+.post-link {
+  text-decoration: none;
+  color: inherit; /* Keeps the link color consistent with the card styling */
+}
+
+.post-card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+  margin: 1em;
+  padding: 1em;
+}
+
+.post-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.post-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9em;
+  color: #888;
+  margin-bottom: 0.5em;
+}
+
+.post-image img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.caption {
+  font-size: 1em;
+  color: #333;
+  margin: 0.5em 0 1em;
+}
+
+.clothing-items {
+  margin-top: 1em;
+}
+
+.clothing-items h3 {
+  font-size: 1.1em;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+}
+
+.clothing-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.item-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 1em;
+  margin-top: 1em;
+}
+
 button {
   background-color: transparent;
   border: none;
   color: #007bff;
   cursor: pointer;
   font-size: 1em;
+  transition: color 0.3s ease;
 }
 
 button.favorited {
@@ -104,6 +180,10 @@ button.favorited {
 }
 
 button:hover {
-  text-decoration: underline;
+  color: #0056b3;
+}
+
+button.favorited:hover {
+  color: #c9302c;
 }
 </style>

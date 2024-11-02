@@ -24,12 +24,12 @@ onBeforeMount(async () => {
 <template>
   <header>
     <nav>
-      <!-- <div class="title">
+      <div class="title">
         <img src="@/assets/images/logo.svg" />
         <RouterLink :to="{ name: 'Home' }">
-          <h1>Social Media App</h1>
+          <h1>Rewear</h1>
         </RouterLink>
-      </div> -->
+      </div>
       <ul>
         <li>
           <RouterLink :to="{ name: 'Home' }" :class="{ underline: currentRouteName == 'Home' }"> Home </RouterLink>
@@ -65,7 +65,7 @@ onBeforeMount(async () => {
 
 nav {
   padding: 1em 0em;
-  background-color: lightgray;
+  background-color: var(--primary-color);
   display: flex;
   align-items: center;
 }
@@ -106,5 +106,26 @@ ul {
 
 .underline {
   text-decoration: underline;
+}
+</style>
+
+<style>
+:root {
+  --color-ash-gray: #cfd5c4;
+  --color-moss-green: #89985f;
+  --color-tan: #d8b28c;
+  --color-sage-1: #c2c996;
+  --color-sage-2: #c4d1a1;
+
+  /* Basic Theme Colors */
+  --background-color: var(--color-ash-gray);
+  --primary-color: var(--color-moss-green);
+  --accent-color: var(--color-tan);
+  --secondary-background: var(--color-sage-1);
+  --highlight-color: var(--color-sage-2);
+
+  /* Text Colors */
+  --text-color: #333; /* Set a dark color for contrast */
+  --text-light: #ffffff;
 }
 </style>

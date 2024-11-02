@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { fetchy } from "@/utils/fetchy";
 import { onMounted, ref } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
 interface OotdPost {
   _id: string;
@@ -27,6 +27,7 @@ interface CatalogItem {
 }
 
 const route = useRoute();
+const router = useRouter();
 const postId = route.params.id as string;
 
 const post = ref<OotdPost | null>(null);
@@ -65,11 +66,19 @@ const fetchCatalogItems = async () => {
   catalogItems.value = itemDetails;
 };
 
+// Navigate back
+const goBack = () => {
+  router.back();
+};
+
 onMounted(fetchPost);
 </script>
 
 <template>
-  <main class="ootd-post column">
+  <main class="ootd-post">
+    <!-- Back button -->
+    <button class="back-button" @click="goBack">← Back</button>
+
     <!-- Loading and error states -->
     <div v-if="isLoading" class="loading">Loading...</div>
     <div v-else-if="errorMessage" class="error">{{ errorMessage }}</div>
@@ -92,7 +101,6 @@ onMounted(fetchPost);
       <ul class="clothing-items">
         <li v-for="item in catalogItems" :key="item._id" class="clothing-item">
           <p><strong>Name:</strong> {{ item.name }}</p>
-          <p><strong>Color:</strong> {{ item.color }}</p>
           <p><strong>Category:</strong> {{ item.category }}</p>
         </li>
       </ul>
@@ -103,11 +111,37 @@ onMounted(fetchPost);
 <style scoped>
 .ootd-post {
   max-width: 600px;
-  margin: 0 auto;
+  margin: 2em auto; /* Added top margin */
   padding: 1em;
   background-color: #f9f9f9;
   border-radius: 8px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* .back-button {
+  display: inline-block;
+  margin-bottom: 1em;
+  padding: 0.5em 1em;
+  font-size: 1em;
+  color: #007bff;
+  background: none;
+  border: 1px solid #007bff;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+} */
+.back-button {
+  background-color: transparent;
+  color: #007bff;
+  border: none;
+  font-size: 1em;
+  cursor: pointer;
+  margin-bottom: 1em;
+  transition: color 0.3s;
+}
+
+.back-button:hover {
+  color: #0056b3;
 }
 
 .loading,

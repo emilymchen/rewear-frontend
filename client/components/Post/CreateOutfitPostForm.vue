@@ -73,7 +73,7 @@ onBeforeMount(getCatalogItems);
 
 <template>
   <form @submit.prevent="createPost">
-    <label for="content">Post Contents:</label>
+    <label for="content">Post your OOTD!</label>
     <textarea id="content" v-model="caption" placeholder="Create a post!" required></textarea>
 
     <!-- New field for Photo URL -->
@@ -133,7 +133,7 @@ input {
 
 button {
   padding: 0.7em;
-  background-color: #007bff;
+  background-color: #6c7a46;
   color: white;
   border: none;
   border-radius: 4px;

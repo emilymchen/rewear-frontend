@@ -4,7 +4,6 @@ import { createRouter, createWebHistory } from "vue-router";
 import { useUserStore } from "@/stores/user";
 import CatalogItemView from "../views/CatalogItemView.vue";
 import ClosetView from "../views/ClosetView.vue";
-import EditCatalogItemView from "../views/EditCatalogItemView.vue";
 import ExploreView from "../views/ExploreView.vue";
 import HomeView from "../views/HomeView.vue";
 import InboxView from "../views/InboxView.vue";
@@ -61,19 +60,13 @@ const router = createRouter({
     {
       path: "/view/:category/:id",
       name: "view",
-      component: EditCatalogItemView,
+      component: CatalogItemView,
       meta: { requiresAuth: true },
     },
     {
       path: "/ootd/:id",
       name: "ootd",
       component: OotdView,
-      meta: { requiresAuth: true },
-    },
-    {
-      path: "/catalog/:id",
-      name: "catalog",
-      component: CatalogItemView,
       meta: { requiresAuth: true },
     },
     {

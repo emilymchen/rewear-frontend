@@ -166,9 +166,11 @@ onBeforeMount(async () => {
     <div v-if="showNewConversationModal" class="modal-overlay">
       <div class="modal">
         <h3>Start New Conversation</h3>
-        <input type="text" v-model="newUsername" placeholder="Enter username..." />
-        <button @click="startNewConversation">Start</button>
-        <button @click="showNewConversationModal = false">Cancel</button>
+        <input class="input-text" type="text" v-model="newUsername" placeholder="Enter username..." />
+        <div class="modal-buttons">
+          <button @click="startNewConversation" class="start-button">Start</button>
+          <button @click="showNewConversationModal = false" class="cancel-button">Cancel</button>
+        </div>
       </div>
     </div>
   </div>
@@ -177,14 +179,15 @@ onBeforeMount(async () => {
 <style scoped>
 .inbox-container {
   display: flex;
-  height: 100vh;
-  background-color: #f8f8f8;
+  height: 92vh;
+  background-color: var(--color-ash-gray);
+  font-family: Arial, sans-serif;
 }
 
 /* Sidebar Styling */
 .sidebar {
   width: 250px;
-  background-color: #e0e0e0;
+  background-color: var(--color-moss-green);
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -192,7 +195,10 @@ onBeforeMount(async () => {
 
 .sidebar h2 {
   margin: 0 0 20px;
-  font-size: 1.2em;
+  font-size: 1.5em;
+  color: #333;
+  font-weight: bold;
+  text-align: center;
 }
 
 .conversation-list {
@@ -207,6 +213,8 @@ onBeforeMount(async () => {
   padding: 10px;
   cursor: pointer;
   border-radius: 8px;
+  margin-bottom: 8px;
+  transition: background-color 0.3s;
 }
 
 .conversation-list li.active,
@@ -214,26 +222,27 @@ onBeforeMount(async () => {
   background-color: #d0d0d0;
 }
 
-.avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  margin-right: 10px;
-}
-
 .username {
   font-weight: bold;
+  color: #333;
 }
 
 .new-conversation-btn {
-  margin-top: 20px;
+  margin-top: auto;
   padding: 10px;
-  background-color: #007bff;
+  background-color: #6c7a46;
   color: #ffffff;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   text-align: center;
+  font-size: 1em;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.new-conversation-btn:hover {
+  background-color: #0056b3;
 }
 
 /* Chat Area Styling */
@@ -241,14 +250,18 @@ onBeforeMount(async () => {
   flex: 1;
   display: flex;
   flex-direction: column;
-  background-color: #ffffff;
+  background-color: #dbe4c2;
 }
 
 .chat-header {
   display: flex;
   align-items: center;
   padding: 20px;
-  border-bottom: 1px solid #e0e0e0;
+  background-color: var(--color-sage-2);
+  border-bottom: 1px solid #d0d0d0;
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #333;
 }
 
 .messages {
@@ -262,18 +275,20 @@ onBeforeMount(async () => {
   margin-bottom: 10px;
   padding: 10px;
   border-radius: 10px;
-  background-color: #f1f1f1;
+  background-color: var(--color-tan);
+  word-wrap: break-word;
 }
 
 .message--sent {
   align-self: flex-end;
-  background-color: #d1e7ff;
+  background-color: #abcb90;
 }
 
 .message-input {
   display: flex;
   padding: 20px;
   border-top: 1px solid #e0e0e0;
+  background-color: var(--color-sage-2);
 }
 
 .message-input input {
@@ -288,11 +303,17 @@ onBeforeMount(async () => {
 .message-input button {
   padding: 10px 15px;
   font-size: 1em;
-  background-color: #007bff;
+  background-color: var(--color-moss-green);
   color: #ffffff;
   border: none;
   border-radius: 8px;
   cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.message-input button:hover {
+  background-color: #0056b3;
 }
 
 /* Modal Styling */
@@ -320,23 +341,54 @@ onBeforeMount(async () => {
 
 .modal h3 {
   margin-top: 0;
+  font-size: 1.3em;
+  color: #333;
+  font-weight: bold;
 }
 
 .modal input {
-  width: 100%;
+  width: 80%;
   padding: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   border: 1px solid #ccc;
   border-radius: 5px;
 }
 
-.modal button {
-  padding: 10px 15px;
+.modal-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.start-button {
+  padding: 10px 20px;
   font-size: 1em;
   background-color: #007bff;
   color: #ffffff;
   border: none;
   border-radius: 8px;
   cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.start-button:hover {
+  background-color: #0056b3;
+}
+
+.cancel-button {
+  padding: 10px 20px;
+  font-size: 1em;
+  background-color: #ccc;
+  color: #333;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.cancel-button:hover {
+  background-color: #999;
 }
 </style>

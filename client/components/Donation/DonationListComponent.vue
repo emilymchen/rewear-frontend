@@ -32,10 +32,10 @@ onMounted(fetchListedItems);
 </script>
 
 <template>
-  <section class="explore-page">
+  <section class="donation-page">
     <h1>Explore Items for Donation</h1>
-    <div v-if="isLoading">Loading items...</div>
-    <div v-else-if="listedItems.length === 0">No items currently listed for donation.</div>
+    <div v-if="isLoading" class="loading-message">Loading items...</div>
+    <div v-else-if="listedItems.length === 0" class="no-items-message">No items currently listed for donation.</div>
     <div v-else class="items-grid">
       <ItemCard v-for="item in listedItems" :key="item._id" :item="item" />
     </div>
@@ -43,13 +43,45 @@ onMounted(fetchListedItems);
 </template>
 
 <style scoped>
-.explore-page {
-  padding: 1em;
+.donation-page {
+  padding: 2em;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: Arial, sans-serif;
+  color: #333;
+  background-color: #f9f9f9;
+}
+h1 {
+  font-size: 2em;
+  color: #333;
+  margin-bottom: 1em;
+  font-weight: bold;
+  letter-spacing: 1px;
+  width: 1200px;
+}
+
+.loading-message,
+.no-items-message {
+  font-size: 1.2em;
+  color: #666;
+  padding: 2em 0;
+  width: 1200px;
 }
 
 .items-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 1em;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5em;
+}
+
+@media (max-width: 768px) {
+  h1 {
+    font-size: 1.5em;
+  }
+
+  .items-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1em;
+  }
 }
 </style>

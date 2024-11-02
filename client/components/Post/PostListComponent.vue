@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import CreatePostForm from "@/components/Post/CreatePostForm.vue";
 import EditPostForm from "@/components/Post/EditPostForm.vue";
 import PostComponent from "@/components/Post/PostComponent.vue";
 import { useUserStore } from "@/stores/user";
@@ -38,56 +37,88 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <section v-if="isLoggedIn">
-    <h2>Create a post:</h2>
-    <CreatePostForm @refreshPosts="getPosts" />
-  </section>
-  <div class="row">
-    <h2 v-if="!searchAuthor">Posts:</h2>
-    <h2 v-else>Posts by {{ searchAuthor }}:</h2>
-    <SearchPostForm @getPostsByAuthor="getPosts" />
+  <div class="posts-page">
+    <!-- Header Section for Search and Title -->
+    <div class="header">
+      <h2 v-if="searchAuthor">Posts by {{ searchAuthor }}:</h2>
+      <SearchPostForm @getPostsByAuthor="getPosts" />
+    </div>
+
+    <!-- Posts Section -->
+    <section class="posts" v-if="loaded && posts.length !== 0">
+      <article v-for="post in posts" :key="post._id" class="post-card">
+        <PostComponent v-if="editing !== post._id" :post="post" @refreshPosts="getPosts" @editPost="updateEditing" />
+        <EditPostForm v-else :post="post" @refreshPosts="getPosts" @editPost="updateEditing" />
+      </article>
+    </section>
+
+    <!-- Messages for No Posts or Loading -->
+    <p v-else-if="loaded" class="no-posts">No posts found</p>
+    <p v-else class="loading">Loading...</p>
   </div>
-  <section class="posts" v-if="loaded && posts.length !== 0">
-    <article v-for="post in posts" :key="post._id">
-      <PostComponent v-if="editing !== post._id" :post="post" @refreshPosts="getPosts" @editPost="updateEditing" />
-      <EditPostForm v-else :post="post" @refreshPosts="getPosts" @editPost="updateEditing" />
-    </article>
-  </section>
-  <p v-else-if="loaded">No posts found</p>
-  <p v-else>Loading...</p>
 </template>
 
 <style scoped>
-section {
-  display: flex;
-  flex-direction: column;
-  gap: 1em;
-}
-
-section,
-p,
-.row {
+.posts-page {
+  padding: 2em;
+  max-width: 1200px;
   margin: 0 auto;
-  max-width: 60em;
+  font-family: Arial, sans-serif;
+  color: #333;
+  background-color: #f9f9f9;
 }
 
-article {
-  background-color: var(--base-bg);
-  border-radius: 1em;
+.header {
   display: flex;
-  flex-direction: column;
-  gap: 0.5em;
-  padding: 1em;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5em;
+  width: 1200px;
+}
+
+.header h2 {
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #007bff;
 }
 
 .posts {
-  padding: 1em;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5em;
 }
 
-.row {
-  display: flex;
-  justify-content: space-between;
-  margin: 0 auto;
-  max-width: 60em;
+.post-card {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 1.5em;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.post-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.no-posts,
+.loading {
+  text-align: center;
+  font-size: 1.2em;
+  color: #888;
+  margin-top: 2em;
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header h2 {
+    margin-bottom: 1em;
+  }
 }
 </style>
