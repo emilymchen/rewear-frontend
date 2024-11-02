@@ -72,8 +72,10 @@ const closeModal = () => {
       </div>
 
       <!-- Modal Controls -->
-      <button @click="confirmSelection">Confirm Selection</button>
-      <button @click="closeModal">Cancel</button>
+      <div class="modal-controls">
+        <button class="confirm-button" @click="confirmSelection">Confirm Selection</button>
+        <button class="cancel-button" @click="closeModal">Cancel</button>
+      </div>
     </div>
   </div>
 </template>
@@ -89,27 +91,40 @@ const closeModal = () => {
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 1000;
 }
 
 .modal-content {
   background: white;
-  padding: 1em;
-  border-radius: 8px;
+  padding: 2em;
+  border-radius: 10px;
   width: 90%;
   max-width: 600px;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+h2 {
+  margin-bottom: 1em;
+  font-size: 1.5em;
+  color: #333;
 }
 
 .tabs {
   display: flex;
   gap: 0.5em;
   margin-bottom: 1em;
+  flex-wrap: wrap;
 }
 
 .tabs button {
   padding: 0.5em 1em;
   border: none;
-  background-color: #ddd;
+  background-color: #e0e0e0;
+  color: #333;
+  border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .tabs button.active {
@@ -117,9 +132,14 @@ const closeModal = () => {
   color: white;
 }
 
+.tabs button:hover {
+  background-color: #007bff;
+  color: white;
+}
+
 .items-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   gap: 1em;
   margin-top: 1em;
 }
@@ -130,22 +150,73 @@ const closeModal = () => {
   padding: 0.5em;
   text-align: center;
   cursor: pointer;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
   position: relative;
 }
 
 .item-card.selected {
   border-color: #007bff;
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
+}
+
+.item-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .item-card img {
   width: 100%;
   height: auto;
-  border-radius: 8px;
+  border-radius: 5px;
+}
+
+.item-card p {
+  margin-top: 0.5em;
+  font-size: 0.9em;
+  color: #333;
 }
 
 .item-card input[type="checkbox"] {
   position: absolute;
   top: 8px;
   right: 8px;
+  cursor: pointer;
+}
+
+.modal-controls {
+  display: flex;
+  gap: 1em;
+  justify-content: center;
+  margin-top: 1.5em;
+}
+
+.confirm-button,
+.cancel-button {
+  padding: 0.7em 1.5em;
+  border-radius: 5px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.confirm-button {
+  background-color: #007bff;
+  color: white;
+}
+
+.confirm-button:hover {
+  background-color: #0056b3;
+}
+
+.cancel-button {
+  background-color: #ccc;
+  color: #333;
+}
+
+.cancel-button:hover {
+  background-color: #999;
 }
 </style>
