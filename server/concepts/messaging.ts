@@ -56,6 +56,33 @@ export default class MessagingConcept {
   }
 
   /**
+   * Get a list of unique users the logged-in user has exchanged messages with.
+   */
+  async getConversationUsers(userId: ObjectId) {
+    const messages = await this.messages.readMany(
+      {
+        $or: [{ sender: userId }, { recipient: userId }],
+      },
+      {
+        projection: { sender: 1, recipient: 1 }, // Only retrieve the sender and recipient fields
+      },
+    );
+
+    // Extract unique user IDs that the logged-in user has interacted with
+    const userIds = new Set<string>();
+    messages.forEach((message) => {
+      if (message.sender && !message.sender.equals(userId)) {
+        userIds.add(message.sender.toHexString());
+      }
+      if (message.recipient && !message.recipient.equals(userId)) {
+        userIds.add(message.recipient.toHexString());
+      }
+    });
+
+    return Array.from(userIds).map((id) => new ObjectId(id)); // Convert back to ObjectId array if needed
+  }
+
+  /**
    * Get messages between two users.
    */
   async getMessagesBetween(user1: ObjectId, user2: ObjectId) {
@@ -71,9 +98,9 @@ export default class MessagingConcept {
       },
     );
 
-    if (!messages.length) {
-      throw new NotFoundError(`No messages found between users ${user1} and ${user2}`);
-    }
+    // if (!messages.length) {
+    //   throw new NotFoundError(`No messages found between users ${user1} and ${user2}`);
+    // }
 
     return messages;
   }

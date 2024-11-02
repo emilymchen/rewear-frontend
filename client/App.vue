@@ -24,18 +24,29 @@ onBeforeMount(async () => {
 <template>
   <header>
     <nav>
-      <div class="title">
+      <!-- <div class="title">
         <img src="@/assets/images/logo.svg" />
         <RouterLink :to="{ name: 'Home' }">
           <h1>Social Media App</h1>
         </RouterLink>
-      </div>
+      </div> -->
       <ul>
         <li>
           <RouterLink :to="{ name: 'Home' }" :class="{ underline: currentRouteName == 'Home' }"> Home </RouterLink>
         </li>
         <li v-if="isLoggedIn">
-          <RouterLink :to="{ name: 'Settings' }" :class="{ underline: currentRouteName == 'Settings' }"> Settings </RouterLink>
+          <div className="nav-item">
+            <RouterLink :to="{ name: 'Settings' }" :class="{ underline: currentRouteName == 'Settings' }"> Settings </RouterLink>
+          </div>
+          <div className="nav-item">
+            <RouterLink :to="{ name: 'my closet' }" :class="{ underline: currentRouteName == 'my closet' }"> my closet </RouterLink>
+          </div>
+          <div className="nav-item">
+            <RouterLink :to="{ name: 'explore' }" :class="{ underline: currentRouteName == 'explore' }"> explore </RouterLink>
+          </div>
+          <div className="nav-item">
+            <RouterLink :to="{ name: 'inbox' }" :class="{ underline: currentRouteName == 'inbox' }"> inbox </RouterLink>
+          </div>
         </li>
         <li v-else>
           <RouterLink :to="{ name: 'Login' }" :class="{ underline: currentRouteName == 'Login' }"> Login </RouterLink>
@@ -53,10 +64,15 @@ onBeforeMount(async () => {
 @import "./assets/toast.css";
 
 nav {
-  padding: 1em 2em;
+  padding: 1em 0em;
   background-color: lightgray;
   display: flex;
   align-items: center;
+}
+
+.nav-item {
+  display: inline-block;
+  padding-right: 1em;
 }
 
 h1 {
@@ -82,7 +98,6 @@ a {
 
 ul {
   list-style-type: none;
-  margin-left: auto;
   display: flex;
   align-items: center;
   flex-direction: row;

@@ -68,4 +68,12 @@ export default class FavoritingConcept {
     const favorite = await this.favorites.readOne({ userId, itemId });
     return favorite !== null;
   }
+
+  /**
+   * deletes all favorites associated with a specific item ID
+   */
+  async deleteAllFavoritesForItem(itemId: ObjectId) {
+    await this.favorites.deleteMany({ itemId });
+    return { msg: "All favorites for this item have been deleted." };
+  }
 }

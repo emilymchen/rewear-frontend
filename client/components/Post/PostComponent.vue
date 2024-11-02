@@ -1,73 +1,109 @@
+<!-- src/components/Feed/Post.vue -->
 <script setup lang="ts">
-import { useUserStore } from "@/stores/user";
-import { formatDate } from "@/utils/formatDate";
-import { storeToRefs } from "pinia";
-import { fetchy } from "../../utils/fetchy";
-import FavoriteButton from "../Favorite/FavoriteButton.vue";
+import { fetchy } from "@/utils/fetchy";
+import { defineProps, onBeforeMount, ref } from "vue";
 
-const props = defineProps(["post"]);
-const emit = defineEmits(["editPost", "refreshPosts"]);
-const { currentUsername } = storeToRefs(useUserStore());
+interface ClothingItem {
+  _id: string;
+  name: string;
+  color: string;
+  category: string;
+  photoUrl: string;
+}
 
-const deletePost = async () => {
+interface PostData {
+  _id: string;
+  author: string;
+  caption: string;
+  photoUrl: string;
+  selectedItems: ClothingItem[];
+  dateCreated: string;
+  favorited: boolean;
+}
+
+const props = defineProps<{ post: PostData }>();
+const isFavorited = ref(props.post.favorited);
+const catalogItems = ref<ClothingItem[]>([]);
+
+async function toggleFavorite() {
   try {
-    await fetchy(`/api/posts/${props.post._id}`, "DELETE");
-  } catch {
-    return;
+    if (isFavorited.value) {
+      await fetchy(`/api/favorites/${props.post._id}`, "DELETE");
+      isFavorited.value = false;
+    } else {
+      await fetchy(`/api/favorites/${props.post._id}`, "POST");
+      isFavorited.value = true;
+    }
+  } catch (error) {
+    console.error("Error toggling favorite:", error);
   }
-  emit("refreshPosts");
-};
+}
+
+async function getCatalogItems() {
+  for (const item of props.post.selectedItems) {
+    try {
+      const result = await fetchy(`/api/catalog/${item}`, "GET");
+      catalogItems.value.push(result);
+    } catch (error) {
+      console.error("Error fetching catalog item:", error);
+    }
+  }
+}
+
+onBeforeMount(() => {
+  getCatalogItems();
+});
 </script>
 
 <template>
-  <p class="author">{{ props.post.author }}</p>
-  <p>{{ props.post.content }}</p>
-  <div class="base">
-    <menu v-if="props.post.author == currentUsername">
-      <li><button class="btn-small pure-button" @click="emit('editPost', props.post._id)">Edit</button></li>
-      <li><button class="button-error btn-small pure-button" @click="deletePost">Delete</button></li>
-      <li><FavoriteButton :initialFavorited="props.post.favorited" :itemId="props.post._id" /></li>
-    </menu>
-    <article class="timestamp">
-      <p v-if="props.post.dateCreated !== props.post.dateUpdated">Edited on: {{ formatDate(props.post.dateUpdated) }}</p>
-      <p v-else>Created on: {{ formatDate(props.post.dateCreated) }}</p>
+  <router-link :to="`/ootd/${post._id}`">
+    <article class="post-card">
+      <header class="post-header">
+        <p class="author">Posted by {{ props.post.author }}</p>
+        <p class="date">{{ new Date(props.post.dateCreated).toLocaleDateString() }}</p>
+      </header>
+
+      <div class="post-image">
+        <img :src="props.post.photoUrl" alt="Post image" />
+      </div>
+
+      <p class="caption">{{ props.post.caption }}</p>
+
+      <div class="clothing-items">
+        <h3>Outfit Items:</h3>
+        <ul>
+          <li v-for="item in catalogItems" :key="item._id" class="clothing-item">
+            <img :src="item.photoUrl" alt="Clothing item image" class="item-image" width="50px" />
+            <p>
+              <strong>{{ item.name }}</strong> - {{ item.color }} ({{ item.category }})
+            </p>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Favorite Button -->
+      <button @click="toggleFavorite" :class="{ favorited: isFavorited }">
+        {{ isFavorited ? "Unfavorite" : "Favorite" }}
+      </button>
+      <button @click="$emit('delete-post', props.post._id)">Delete Post</button>
     </article>
-  </div>
+  </router-link>
 </template>
 
 <style scoped>
-p {
-  margin: 0em;
+button {
+  background-color: transparent;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+  font-size: 1em;
 }
 
-.author {
-  font-weight: bold;
-  font-size: 1.2em;
+button.favorited {
+  color: #d9534f;
 }
 
-menu {
-  list-style-type: none;
-  display: flex;
-  flex-direction: row;
-  gap: 1em;
-  padding: 0;
-  margin: 0;
-}
-
-.timestamp {
-  display: flex;
-  justify-content: flex-end;
-  font-size: 0.9em;
-  font-style: italic;
-}
-
-.base {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.base article:only-child {
-  margin-left: auto;
+button:hover {
+  text-decoration: underline;
 }
 </style>

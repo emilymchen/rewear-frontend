@@ -33,7 +33,7 @@ export default class CatalogingConcept {
   /**
    * adds a new item to a user's catalog
    */
-  async addToCatalog(userId: ObjectId, name: string, category: Category, photoUrl?: string) {
+  async addToCatalog(userId: ObjectId, name: string, category: Category, photoUrl: string) {
     // Ensure the category is valid
     if (!CATEGORIES.includes(category)) {
       throw new NotAllowedError(`Invalid category: ${category}`);
@@ -58,9 +58,15 @@ export default class CatalogingConcept {
   /**
    * retrieves & returns all items in a user's catalog
    */
-  async getCatalog(userId: ObjectId) {
-    const items = await this.catalog.readMany({ userId });
-    return items;
+  async getCatalog(userId: ObjectId, category?: Category) {
+    if (category) {
+      const items = await this.catalog.readMany({ userId, category });
+      return items;
+    } else {
+      const items = await this.catalog.readMany({ userId });
+      console.log("helo", items);
+      return items;
+    }
   }
 
   /**
@@ -68,7 +74,7 @@ export default class CatalogingConcept {
    */
   async getItem(userId: ObjectId, itemId: ObjectId) {
     // make sure that the itemId belongs to the provided userId
-    const item = await this.catalog.readOne({ _id: itemId, userId });
+    const item = await this.catalog.readOne({ _id: itemId });
     if (!item) {
       throw new NotFoundError("Item not found in the user's catalog.");
     }

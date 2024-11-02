@@ -2,10 +2,17 @@ import { storeToRefs } from "pinia";
 import { createRouter, createWebHistory } from "vue-router";
 
 import { useUserStore } from "@/stores/user";
+import CatalogItemView from "../views/CatalogItemView.vue";
+import ClosetView from "../views/ClosetView.vue";
+import EditCatalogItemView from "../views/EditCatalogItemView.vue";
+import ExploreView from "../views/ExploreView.vue";
 import HomeView from "../views/HomeView.vue";
+import InboxView from "../views/InboxView.vue";
 import LoginView from "../views/LoginView.vue";
 import NotFoundView from "../views/NotFoundView.vue";
+import OotdView from "../views/OotdView.vue";
 import SettingView from "../views/SettingView.vue";
+import UploadCatalogItemView from "../views/UploadCatalogItemView.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -19,6 +26,54 @@ const router = createRouter({
       path: "/setting",
       name: "Settings",
       component: SettingView,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/closet",
+      name: "my closet",
+      component: ClosetView,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/explore",
+      name: "explore",
+      component: ExploreView,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/inbox",
+      name: "inbox",
+      component: InboxView,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/inbox/:id",
+      name: "conversation",
+      component: InboxView,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/new/:category",
+      name: "new",
+      component: UploadCatalogItemView,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/view/:category/:id",
+      name: "view",
+      component: EditCatalogItemView,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/ootd/:id",
+      name: "ootd",
+      component: OotdView,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/catalog/:id",
+      name: "catalog",
+      component: CatalogItemView,
       meta: { requiresAuth: true },
     },
     {

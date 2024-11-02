@@ -3,7 +3,7 @@ import { ObjectId } from "mongodb";
 import { Router, getExpressRouter } from "./framework/router";
 
 import { Authing, Cataloging, Donating, Favoriting, Friending, Labeling, Messaging, Posting, Sessioning } from "./app";
-import { PostOptions } from "./concepts/posting";
+import { DonationStatus } from "./concepts/donating";
 import { SessionDoc } from "./concepts/sessioning";
 import Responses from "./responses";
 
@@ -25,6 +25,11 @@ class Routes {
   @Router.get("/users")
   async getUsers() {
     return await Authing.getUsers();
+  }
+
+  @Router.get("/userById/:id")
+  async getUserById(id: string) {
+    return await Authing.getUserById(new ObjectId(id));
   }
 
   @Router.get("/users/:username")
@@ -98,10 +103,16 @@ class Routes {
     }
   }
 
+  @Router.get("/posts/:id")
+  async getPost(id: string) {
+    const oid = new ObjectId(id);
+    return await Responses.post(await Posting.getPost(oid));
+  }
+
   @Router.post("/posts")
-  async createPost(session: SessionDoc, content: string, options?: PostOptions) {
+  async createPost(session: SessionDoc, caption: string, selectedItems: string[], photoUrl?: string, options?: PostOptions) {
     const user = Sessioning.getUser(session);
-    const created = await Posting.create(user, content, options);
+    const created = await Posting.create(user, caption, selectedItems, photoUrl, options);
     return { msg: created.msg, post: await Responses.post(created.post) };
   }
 
@@ -170,15 +181,44 @@ class Routes {
 
   // Get a user's catalog (closet)
   @Router.get("/catalog")
-  async getCatalog(session: SessionDoc) {
+  async getCatalog(session: SessionDoc, category?: (typeof CATEGORIES)[number]) {
     const user = Sessioning.getUser(session);
-    return await Cataloging.getCatalog(user);
+
+    // Fetch all catalog items for the user based on category
+    const catalogItems = await Cataloging.getCatalog(user, category);
+
+    // Fetch donation statuses for these items
+    return catalogItems.filter(async (item) => {
+      const donationStatus = await Donating.getDonationStatus(item._id);
+      return !donationStatus || donationStatus === DonationStatus.NotListed;
+    });
+  }
+
+  @Router.get("/catalog/:itemId")
+  async getCatalogItem(session: SessionDoc, itemId: string) {
+    const user = Sessioning.getUser(session);
+    const item = new ObjectId(itemId);
+    return await Cataloging.getItem(user, item);
   }
 
   // Add an item to the user's catalog
   @Router.post("/catalog")
   // @Router.validate(addItemSchema) // Use Zod validation
-  async addItemToCatalog(session: SessionDoc, name: string, category: (typeof CATEGORIES)[number], photoUrl?: string) {
+  async addItemToCatalog(session: SessionDoc, name: string, category: (typeof CATEGORIES)[number], photoUrl: string) {
+    // const upload = multer({
+    //   storage: storage,
+    //   fileFilter: (req, file, cb) => {
+    //     if (file.mimetype == "image/png" || file.mimetype == "image/jpg" || file.mimetype == "image/jpeg") {
+    //       cb(null, true);
+    //     } else {
+    //       cb(null, false);
+    //       return cb(new Error("Only .png, .jpg and .jpeg format allowed!"));
+    //     }
+    //   },
+    // });
+
+    // const uploadImages = upload.array("image");
+
     const user = Sessioning.getUser(session);
     return await Cataloging.addToCatalog(user, name, category, photoUrl);
   }
@@ -238,6 +278,13 @@ class Routes {
     return await Favoriting.unfavoriteItem(user, item);
   }
 
+  // Delete favorites for all users for an item or post
+  @Router.delete("/favorites/:itemId/all")
+  async deleteAllFavorites(session: SessionDoc, itemId: string) {
+    const item = new ObjectId(itemId);
+    return await Favoriting.deleteAllFavoritesForItem(item);
+  }
+
   // Get all messages for the user
   @Router.get("/messages")
   async getMessages(session: SessionDoc) {
@@ -245,11 +292,18 @@ class Routes {
     return await Messaging.getMessages(user);
   }
 
+  @Router.get("/conversations")
+  async getConversations(session: SessionDoc) {
+    const user = Sessioning.getUser(session);
+    return await Messaging.getConversationUsers(user);
+  }
+
   // Send a message to another user
   @Router.post("/messages")
   async sendMessage(session: SessionDoc, recipient: string, content: string) {
     const sender = Sessioning.getUser(session);
-    const recipientId = (await Authing.getUserByUsername(recipient))._id;
+    // const recipientId = (await Authing.getUserByUsername(recipient))._id;
+    const recipientId = new ObjectId(recipient);
     return await Messaging.sendMessage(sender, recipientId, content);
   }
 
@@ -257,7 +311,7 @@ class Routes {
   @Router.get("/messages/:recipient")
   async getMessagesWithRecipient(session: SessionDoc, recipient: string) {
     const user = Sessioning.getUser(session);
-    const recipientId = (await Authing.getUserByUsername(recipient))._id;
+    const recipientId = new ObjectId(recipient);
     return await Messaging.getMessagesBetween(user, recipientId);
   }
 
@@ -274,16 +328,38 @@ class Routes {
   @Router.get("/donations")
   async getUserDonations(session: SessionDoc) {
     const user = Sessioning.getUser(session);
-    const donations = await Donating.getListedItems(user);
+    const donations = await Donating.getUserListedItems(user);
     return donations;
+  }
+
+  // Get all listed donation items
+  @Router.get("/donations/all")
+  async getAllDonations() {
+    return await Donating.getAllListedItems();
+  }
+
+  // Get all previously donated items for a user
+  @Router.get("/donated")
+  async getDonatedItems(session: SessionDoc) {
+    const user = Sessioning.getUser(session);
+    return await Donating.getDonatedItems(user);
   }
 
   // Unlist a donation item
   @Router.delete("/donations/:itemId")
-  async removeFromDonationList(session: SessionDoc, itemId: string) {
+  async unlistDonationItem(session: SessionDoc, itemId: string) {
     const user = Sessioning.getUser(session);
     const itemObjectId = new ObjectId(itemId);
     await Donating.unlistForDonation(user, itemObjectId);
+    return { msg: "Item removed from donation list" };
+  }
+
+  // Delete an item from the donation list
+  @Router.delete("/donations/:itemId/delete")
+  async deleteFromDonationList(session: SessionDoc, itemId: string) {
+    const user = Sessioning.getUser(session);
+    const itemObjectId = new ObjectId(itemId);
+    await Donating.deleteFromDonationList(user, itemObjectId);
     return { msg: "Item removed from donation list" };
   }
 
@@ -301,15 +377,8 @@ class Routes {
   async getDonationStatus(session: SessionDoc, itemId: string) {
     const user = Sessioning.getUser(session);
     const itemObjectId = new ObjectId(itemId);
-    const donationStatus = await Donating.getDonationStatus(user, itemObjectId);
+    const donationStatus = await Donating.getDonationStatus(itemObjectId);
     return donationStatus;
-  }
-
-  // Get all previously donated items for a user
-  @Router.get("/donations/donated")
-  async getDonatedItems(session: SessionDoc) {
-    const user = Sessioning.getUser(session);
-    return await Donating.getDonatedItems(user);
   }
 }
 
