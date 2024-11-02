@@ -47,6 +47,8 @@ function toggleView(view: "posts" | "donations") {
 .explore-page {
   padding: 1em;
   background-color: var(--color-ash-gray);
+  display: block;
+  overflow: auto;
 }
 
 .toggle-container {

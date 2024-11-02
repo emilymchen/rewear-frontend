@@ -16,7 +16,7 @@ interface CatalogItem {
 const listedItems = ref<CatalogItem[]>([]);
 const isLoading = ref(true);
 
-async function fetchListedItems() {
+const fetchListedItems = async () => {
   try {
     const result = await fetchy("/api/donations/all", "GET");
     listedItems.value = result;
@@ -26,7 +26,7 @@ async function fetchListedItems() {
   } finally {
     isLoading.value = false;
   }
-}
+};
 
 onMounted(fetchListedItems);
 </script>
@@ -49,7 +49,7 @@ onMounted(fetchListedItems);
   margin: 0 auto;
   font-family: Arial, sans-serif;
   color: #333;
-  background-color: #f9f9f9;
+  background-color: #bbc3ac;
 }
 h1 {
   font-size: 2em;

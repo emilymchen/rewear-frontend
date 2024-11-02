@@ -10,7 +10,7 @@ const { loginUser, updateSession } = useUserStore();
 async function login() {
   await loginUser(username.value, password.value);
   void updateSession();
-  void router.push({ name: "Home" });
+  void router.push({ name: "explore" });
 }
 </script>
 
@@ -27,7 +27,7 @@ async function login() {
         <input type="password" v-model.trim="password" id="aligned-password" placeholder="Password" required />
       </div>
       <div class="pure-controls">
-        <button type="submit" class="pure-button pure-button-primary">Submit</button>
+        <button type="submit" class="pure-button action-button">Submit</button>
       </div>
     </fieldset>
   </form>
@@ -37,5 +37,10 @@ async function login() {
 h3 {
   display: flex;
   justify-content: center;
+}
+
+.action-button {
+  background-color: var(--color-moss-green);
+  color: white;
 }
 </style>

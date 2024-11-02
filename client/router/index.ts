@@ -5,7 +5,6 @@ import { useUserStore } from "@/stores/user";
 import CatalogItemView from "../views/CatalogItemView.vue";
 import ClosetView from "../views/ClosetView.vue";
 import ExploreView from "../views/ExploreView.vue";
-import HomeView from "../views/HomeView.vue";
 import InboxView from "../views/InboxView.vue";
 import LoginView from "../views/LoginView.vue";
 import NotFoundView from "../views/NotFoundView.vue";
@@ -16,14 +15,14 @@ import UploadCatalogItemView from "../views/UploadCatalogItemView.vue";
 const router = createRouter({
   history: createWebHistory(),
   routes: [
-    {
-      path: "/",
-      name: "Home",
-      component: HomeView,
-    },
+    // {
+    //   path: "/",
+    //   name: "Home",
+    //   component: HomeView,
+    // },
     {
       path: "/setting",
-      name: "Settings",
+      name: "settings",
       component: SettingView,
       meta: { requiresAuth: true },
     },
@@ -34,7 +33,7 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
-      path: "/explore",
+      path: "/",
       name: "explore",
       component: ExploreView,
       meta: { requiresAuth: true },
@@ -77,7 +76,7 @@ const router = createRouter({
       beforeEnter: (to, from) => {
         const { isLoggedIn } = storeToRefs(useUserStore());
         if (isLoggedIn.value) {
-          return { name: "Settings" };
+          return { name: "settings" };
         }
       },
     },

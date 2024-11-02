@@ -10,7 +10,7 @@ const emit = defineEmits(["getPostsByAuthor"]);
     <fieldset>
       <legend>Search by Author</legend>
       <input id="author" type="text" v-model="author" placeholder="Username" />
-      <button type="submit" class="pure-button pure-button-primary">Search</button>
+      <button type="submit" class="pure-button search-button">Search</button>
     </fieldset>
   </form>
 </template>
@@ -21,5 +21,9 @@ form {
   gap: 0.5em;
   padding: 1em;
   align-items: center;
+}
+
+.search-button {
+  background-color: var(--color-moss-green);
 }
 </style>

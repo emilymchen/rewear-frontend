@@ -9,10 +9,10 @@ const props = defineProps<{
     itemId: string;
     photoUrl: string;
     name: string;
-    color: string;
-    type: string;
   };
 }>();
+
+console.log(props);
 
 const router = useRouter();
 
@@ -22,7 +22,6 @@ interface CatalogItem {
   category: string;
   photoUrl: string;
   name: string;
-  type: string;
   color: string;
   max_wears: number | null;
   current_wears: number;
@@ -34,7 +33,7 @@ interface CatalogItem {
 const catalogItem = ref<CatalogItem | null>(null); // Updated to hold a single CatalogItem or null
 
 // Fetch catalog item details
-async function getCatalogItem(id: string) {
+const getCatalogItem = async (id: string) => {
   try {
     const getResults = await fetchy("/api/catalog/" + id, "GET");
     catalogItem.value = getResults;
@@ -42,12 +41,12 @@ async function getCatalogItem(id: string) {
   } catch (error) {
     console.error("Error fetching catalog item: ", error);
   }
-}
+};
 
-function viewItem() {
+const viewItem = () => {
   console.log("???", catalogItem.value?.category);
   router.push(`/view/${catalogItem.value?.category}/${catalogItem.value?._id}`);
-}
+};
 
 onBeforeMount(() => {
   console.log("item", props.item.itemId);

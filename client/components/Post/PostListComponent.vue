@@ -10,9 +10,27 @@ import SearchPostForm from "./SearchPostForm.vue";
 const { isLoggedIn } = storeToRefs(useUserStore());
 
 const loaded = ref(false);
-let posts = ref<Array<Record<string, string>>>([]);
+const posts = ref<PostData[]>([]);
 let editing = ref("");
 let searchAuthor = ref("");
+
+interface ClothingItem {
+  _id: string;
+  name: string;
+  color: string;
+  category: string;
+  photoUrl: string;
+}
+
+interface PostData {
+  _id: string;
+  author: string;
+  caption: string;
+  photoUrl: string;
+  selectedItems: ClothingItem[];
+  dateCreated: string;
+  favorited: boolean;
+}
 
 async function getPosts(author?: string) {
   let query: Record<string, string> = author !== undefined ? { author } : {};
@@ -26,9 +44,9 @@ async function getPosts(author?: string) {
   posts.value = postResults;
 }
 
-function updateEditing(id: string) {
+const updateEditing = (id: string) => {
   editing.value = id;
-}
+};
 
 onBeforeMount(async () => {
   await getPosts();
@@ -65,7 +83,7 @@ onBeforeMount(async () => {
   margin: 0 auto;
   font-family: Arial, sans-serif;
   color: #333;
-  background-color: #f9f9f9;
+  background-color: #bbc3ac; /* Background color from color scheme */
 }
 
 .header {
@@ -73,19 +91,23 @@ onBeforeMount(async () => {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 1.5em;
-  width: 1200px;
+  width: 100%;
+  max-width: 1200px;
 }
 
 .header h2 {
   font-size: 1.5em;
   font-weight: bold;
-  color: #007bff;
+  color: var(--color-moss-green); /* Accent color for header */
 }
 
 .posts {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1.5em;
+  max-width: 1200px;
+  margin: 0 auto;
+  justify-items: center; /* Center grid items within each column */
 }
 
 .post-card {
@@ -107,7 +129,7 @@ onBeforeMount(async () => {
 .loading {
   text-align: center;
   font-size: 1.2em;
-  color: #888;
+  color: var(--color-sage); /* Color for no posts/loading message */
   margin-top: 2em;
 }
 

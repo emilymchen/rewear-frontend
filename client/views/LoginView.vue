@@ -10,3 +10,10 @@ import RegisterForm from "@/components/Login/RegisterForm.vue";
     <RegisterForm />
   </main>
 </template>
+
+<style scoped>
+.column {
+  background-color: var(--color-ash-gray);
+  height: 100vh;
+}
+</style>

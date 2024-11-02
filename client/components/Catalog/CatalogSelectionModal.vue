@@ -31,22 +31,22 @@ const activeCategory = ref<string | null>(null); // Track selected category
 // Filter items based on the active category
 const filteredItems = computed(() => (activeCategory.value ? props.catalogItems.filter((item) => item.category === activeCategory.value) : props.catalogItems));
 
-function toggleSelection(itemId: string) {
+const toggleSelection = (itemId: string) => {
   if (localSelectedItems.value.includes(itemId)) {
     localSelectedItems.value = localSelectedItems.value.filter((id) => id !== itemId);
   } else {
     localSelectedItems.value.push(itemId);
   }
-}
+};
 
-function confirmSelection() {
+const confirmSelection = () => {
   emit("update:selectedItems", localSelectedItems.value);
   closeModal();
-}
+};
 
-function closeModal() {
+const closeModal = () => {
   emit("closeModal");
-}
+};
 </script>
 
 <template>

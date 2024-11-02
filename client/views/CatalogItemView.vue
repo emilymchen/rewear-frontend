@@ -163,7 +163,7 @@ onBeforeMount(async () => {
 });
 </script>
 <template>
-  <section v-if="catalogItem" class="catalog-item-page">
+  <main v-if="catalogItem" class="catalog-item-page">
     <!-- Back Button -->
     <button class="back-button" @click="goBack">← Back</button>
 
@@ -203,7 +203,7 @@ onBeforeMount(async () => {
         <button @click="cancelDelete" class="cancel-button">Cancel</button>
       </div>
     </div>
-  </section>
+  </main>
   <p v-else>Loading...</p>
 </template>
 
@@ -212,7 +212,7 @@ onBeforeMount(async () => {
   max-width: 800px;
   margin: 2em auto;
   padding: 1em;
-  background-color: #f9f9f9;
+  background-color: var(--color-ash-gray);
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   position: relative;

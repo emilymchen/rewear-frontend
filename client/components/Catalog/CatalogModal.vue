@@ -28,7 +28,7 @@ const handleClose = () => {
   emit("close");
 };
 
-async function getCatalogItems(author?: string) {
+const getCatalogItems = async (author?: string) => {
   let query: Record<string, string> = { category: props.type };
   if (author) {
     query.author = author;
@@ -41,7 +41,7 @@ async function getCatalogItems(author?: string) {
   } catch (error) {
     console.error("Error fetching catalog items: ", error);
   }
-}
+};
 
 const hasClothes = computed(() => clothes.value.length > 0);
 
