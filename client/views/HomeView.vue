@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import PostListComponent from "@/components/Post/PostListComponent.vue";
-import FavoriteListComponent from "@/components/Favorite/FavoriteListComponent.vue";
+// import FavoriteListComponent from "@/components/Favorite/FavoriteListComponent.vue";
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
 
@@ -15,7 +15,7 @@ const { currentUsername, isLoggedIn } = storeToRefs(useUserStore());
       <h1 v-else>Please login!</h1>
     </section>
     <PostListComponent />
-    <FavoriteListComponent />
+    <!-- <FavoriteListComponent /> -->
   </main>
 </template>
 
