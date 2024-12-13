@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import DonationListComponent from "@/components/Donation/DonationListComponent.vue";
-import FavoriteListComponent from "@/components/Favorite/FavoriteListComponent.vue";
 import PostListComponent from "@/components/Post/PostListComponent.vue";
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
@@ -39,7 +38,7 @@ function toggleView(view: "posts" | "donations") {
     <div class="content-container">
       <PostListComponent v-if="currentView === 'posts'" />
       <DonationListComponent v-else />
-      <FavoriteListComponent />
+      <!-- <FavoriteListComponent /> -->
     </div>
   </main>
 </template>

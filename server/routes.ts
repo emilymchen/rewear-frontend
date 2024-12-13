@@ -4,6 +4,7 @@ import { Router, getExpressRouter } from "./framework/router";
 
 import { Authing, Cataloging, Donating, Favoriting, Friending, Labeling, Messaging, Posting, Sessioning } from "./app";
 import { DonationStatus } from "./concepts/donating";
+import { PostDoc } from "./concepts/posting";
 import { SessionDoc } from "./concepts/sessioning";
 import Responses from "./responses";
 
@@ -198,22 +199,7 @@ class Routes {
 
   // Add an item to the user's catalog
   @Router.post("/catalog")
-  // @Router.validate(addItemSchema) // Use Zod validation
   async addItemToCatalog(session: SessionDoc, name: string, category: (typeof CATEGORIES)[number], photoUrl: string) {
-    // const upload = multer({
-    //   storage: storage,
-    //   fileFilter: (req, file, cb) => {
-    //     if (file.mimetype == "image/png" || file.mimetype == "image/jpg" || file.mimetype == "image/jpeg") {
-    //       cb(null, true);
-    //     } else {
-    //       cb(null, false);
-    //       return cb(new Error("Only .png, .jpg and .jpeg format allowed!"));
-    //     }
-    //   },
-    // });
-
-    // const uploadImages = upload.array("image");
-
     const user = Sessioning.getUser(session);
     return await Cataloging.addToCatalog(user, name, category, photoUrl);
   }
@@ -254,7 +240,12 @@ class Routes {
   @Router.get("/favorites")
   async getFavoritedItems(session: SessionDoc) {
     const user = Sessioning.getUser(session);
-    return await Favoriting.getFavoritedItems(user);
+    const favoritedItems = await Favoriting.getFavoritedItems(user);
+    let posts: PostDoc[] = [];
+    favoritedItems.forEach(async (item) => {
+      posts.push(await Posting.getPost(item.itemId));
+    });
+    return await Responses.posts(posts);
   }
 
   // Favorite an item or post
