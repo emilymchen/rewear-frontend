@@ -13,6 +13,7 @@ export interface PostDoc extends BaseDoc {
   selectedItems: string[];
   photoUrl?: string;
   options?: PostOptions;
+  favorited?: boolean;
 }
 
 /**

@@ -77,8 +77,7 @@ class Routes {
   }
 
   @Router.get("/posts")
-  @Router.validate(z.object({ author: z.string().optional() }))
-  async getPosts(author?: string, session?: SessionDoc) {
+  async getPosts(session: SessionDoc, author?: string) {
     let posts;
     if (author) {
       const id = (await Authing.getUserByUsername(author))._id;
@@ -87,20 +86,16 @@ class Routes {
       posts = await Posting.getPosts();
     }
 
-    if (session) {
-      const userId = Sessioning.getUser(session);
-      const postsWithFavoriteStatus = [];
-      for (const post of posts) {
-        const isFavorited = await Favoriting.isFavorited(userId, post._id);
-        postsWithFavoriteStatus.push({
-          ...post,
-          favorited: isFavorited,
-        });
-      }
-      return Responses.posts(postsWithFavoriteStatus);
-    } else {
-      return Responses.posts(posts);
+    const userId = Sessioning.getUser(session);
+    const postsWithFavoriteStatus = [];
+    for (const post of posts) {
+      const isFavorited = await Favoriting.isFavorited(userId, post._id);
+      postsWithFavoriteStatus.push({
+        ...post,
+        favorited: isFavorited,
+      });
     }
+    return Responses.posts(postsWithFavoriteStatus);
   }
 
   @Router.get("/posts/:id")
