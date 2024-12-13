@@ -1,6 +1,8 @@
 <!-- src/components/Feed/Post.vue -->
 <script setup lang="ts">
+import { useUserStore } from "@/stores/user";
 import { fetchy } from "@/utils/fetchy";
+import { storeToRefs } from "pinia";
 import { defineProps, onBeforeMount, ref } from "vue";
 
 interface ClothingItem {
@@ -21,6 +23,8 @@ interface PostData {
   favorited: boolean;
 }
 
+const emit = defineEmits(["refreshPosts"]);
+const { currentUsername } = storeToRefs(useUserStore());
 const props = defineProps<{ post: PostData }>();
 const isFavorited = ref(props.post.favorited);
 const catalogItems = ref<ClothingItem[]>([]);
@@ -50,14 +54,23 @@ async function getCatalogItems() {
   }
 }
 
+async function deletePost() {
+  try {
+    await fetchy(`/api/posts/${props.post._id}`, "DELETE");
+  } catch {
+    return;
+  }
+  emit("refreshPosts");
+}
+
 onBeforeMount(() => {
   getCatalogItems();
 });
 </script>
 
 <template>
-  <router-link :to="`/ootd/${post._id}`" class="post-link">
-    <article class="post-card">
+  <article class="post-card">
+    <router-link :to="`/ootd/${post._id}`" class="post-link">
       <header class="post-header">
         <p class="author">Posted by {{ props.post.author }}</p>
         <p class="date">{{ new Date(props.post.dateCreated).toLocaleDateString() }}</p>
@@ -80,16 +93,14 @@ onBeforeMount(() => {
           </li>
         </ul>
       </div>
-
-      <!-- Favorite Button -->
-      <div class="action-buttons">
-        <button @click.stop="toggleFavorite" :class="{ favorited: isFavorited }">
-          {{ isFavorited ? "Unfavorite" : "Favorite" }}
-        </button>
-        <button @click.stop="$emit('delete-post', props.post._id)">Delete Post</button>
-      </div>
-    </article>
-  </router-link>
+    </router-link>
+    <div class="action-buttons">
+      <button @click.stop="toggleFavorite" :class="{ favorited: isFavorited }">
+        {{ isFavorited ? "Unfavorite" : "Favorite" }}
+      </button>
+      <button @click.stop="deletePost" v-if="currentUsername === props.post.author">Delete Post</button>
+    </div>
+  </article>
 </template>
 
 <style scoped>
